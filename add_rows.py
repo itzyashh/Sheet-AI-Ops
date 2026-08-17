@@ -87,7 +87,7 @@ def add_spreadsheet_data(rows):
         ).execute()
     return all_rows
 
-add_spreadsheet_data(['Bill Spencer', 'bill@example', '223'])
+add_spreadsheet_data(['Martin Fowler', 'martin@example', '223'])
 
 
 
