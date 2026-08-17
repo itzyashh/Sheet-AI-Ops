@@ -1,12 +1,9 @@
 """Terminal REPL for the demo sheets agent.
 
 Setup:
-1. Put the service account JSON in service_account/ (gitignored)
-2. Set SERVICE_ACCOUNT_FILE in .env to that path
+1. Put the service account JSON in this folder (gitignored), e.g. Sheet AI 504610.json
+2. Set SERVICE_ACCOUNT_FILE in .env
 3. Share the demo spreadsheet with the service account client_email as Editor
-
-The agent uses sheet schema + a capped search (max 10 rows). It does not
-send the full sheet to the model.
 
 Run:
     uv run python chat.py
