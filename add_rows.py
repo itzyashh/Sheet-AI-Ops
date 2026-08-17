@@ -1,11 +1,38 @@
 import os
+import threading
 import webbrowser
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+
 from dotenv import load_dotenv
 from google.oauth2 import service_account
 from rich.pretty import pprint
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import Flow
 from google.oauth2.credentials import Credentials
+
+AUTH_PAGE = Path(__file__).with_name("auth_callback.html")
+AUTH_PORT = 8000
+
+
+class AuthCallbackHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        body = AUTH_PAGE.read_bytes()
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, format, *args):
+        pass
+
+
+def start_auth_server():
+    server = ThreadingHTTPServer(("127.0.0.1", AUTH_PORT), AuthCallbackHandler)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    return server
 
 
 
@@ -32,10 +59,9 @@ def add_spreadsheet_data(rows):
         include_granted_scopes="true"
     )
 
+    start_auth_server()
     webbrowser.open(auth_url)
-
-
-
+    print("After Google sign-in, copy the code from http://localhost:8000")
     code = input("Enter the code: ")
     flow.fetch_token(code=code)
 
